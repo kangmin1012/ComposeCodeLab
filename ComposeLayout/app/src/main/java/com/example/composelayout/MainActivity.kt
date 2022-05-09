@@ -3,6 +3,7 @@ package com.example.composelayout
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,6 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.composelayout.ui.theme.ComposeLayoutTheme
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
@@ -122,49 +125,44 @@ fun LazyList() {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        Column {
-            Row {
-                Button(
-                    onClick = {
-                        /** 스크롤을 최상단으로 이동 */
-                        coroutineScope.launch {
-                            scrollState.animateScrollToItem(0)
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = "Scroll to the top")
-                }
-
-                Button(
-                    onClick = {
-                        /** 스크롤을 최하단으로 이동 */
-                        coroutineScope.launch {
-                            scrollState.animateScrollToItem(listSize - 1)
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = "Scroll to the end")
-                }
+    Column {
+        Row {
+            Button(
+                onClick = {
+                    /** 스크롤을 최상단으로 이동 */
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(0)
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = "Scroll to the top")
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                state = scrollState
+            Button(
+                onClick = {
+                    /** 스크롤을 최하단으로 이동 */
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(listSize - 1)
+                    }
+                },
+                modifier = Modifier.weight(1f)
             ) {
-                items(listSize) { item ->
-                    ImageListItem(index = item)
-                }
+                Text(text = "Scroll to the end")
             }
         }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            state = scrollState
+        ) {
+            items(listSize) { item ->
+                ImageListItem(index = item)
+            }
+        }
+
     }
 
 }
@@ -175,7 +173,8 @@ fun ImageListItem(index: Int) {
         GlideImage(
             imageModel = "https://developer.android.com/images/brand/Android_Robot.png",
             contentScale = ContentScale.Fit,
-            modifier = Modifier.size(50.dp)
+            modifier = Modifier.size(50.dp),
+            previewPlaceholder = R.drawable.ic_android_black_24dp
         )
 
         Spacer(Modifier.width(10.dp))
@@ -216,15 +215,24 @@ fun PhotographerCard(modifier: Modifier = Modifier) {
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LazyListPreview() {
+    ComposeLayoutTheme {
+        LazyList()
+    }
+}
+
 @Preview
 @Composable
 fun LayoutsCodeLabPreview() {
     ComposeLayoutTheme {
+
         LayoutsCodeLab()
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PhotographerPreview() {
     ComposeLayoutTheme {
