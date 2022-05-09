@@ -4,8 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,8 +31,9 @@ class MainActivity : ComponentActivity() {
 private fun MyApp() {
     /** hoisting target 값
      * by 키워드를 이용하면 .value를 사용하지 않아도 됨.
+     * rememberSaveable을 통해 화면 회전, 프로세스 중단 등 다양한 상황에서도 상태 저장
      */
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     if (shouldShowOnboarding) {
         OnBoardingScreen {
@@ -41,10 +45,19 @@ private fun MyApp() {
 }
 
 @Composable
-private fun Greetings(names: List<String> = listOf("World", "Compose")) {
+private fun Greetings(names: List<String> = List(1000) { "$it"} ) {
     Surface(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp)) {
-        Column() {
-            names.forEach { name ->
+        // LazyColumn, LazyRow = RecyclerView와 동일
+        /**
+         * Lazy 레이아웃은 RecyclerView와 다르게 재활용하지 않음.
+         * 컴포저블을 방출하는게 Views를 인스턴스화 하는 것 보다 상대적으로 비용이 적게 들기 때문.
+         * 스크롤해서 새로운 UI가 보이게 되면 새 컴포저블을 방출하고 성능 유지
+         * */
+        LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
+            /**
+             * names.forEach { name -> ...}
+             */
+            items(items = names) { name ->
                 Greeting(name = name)
             }
         }
