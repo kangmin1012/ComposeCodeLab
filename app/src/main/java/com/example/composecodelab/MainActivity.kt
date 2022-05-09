@@ -3,6 +3,9 @@ package com.example.composecodelab
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -67,10 +70,18 @@ private fun Greetings(names: List<String> = List(1000) { "$it"} ) {
 @Composable
 fun Greeting(name: String) {
     // Composable 함수의 상태를 기억하고 있는 변수
-    val expanded = remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
     // expanded의 상태에 따라 값이 바뀌는 변수
-    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    // animateDpAsState로 애니메이션 적용
+    val extraPadding by animateDpAsState(
+        if (expanded) 48.dp else 0.dp,
+        // Spring 애니메이션 추가
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
     // Surface의 color값에 따라 안에 있는 TextView의 적절한 색상을 자동으로 적용
     Surface(
@@ -84,15 +95,15 @@ fun Greeting(name: String) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(bottom = extraPadding)
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
             ) {
                 Text(text = "Hello,")
                 Text(text = name)
             }
 
             OutlinedButton(
-                onClick = { expanded.value = !expanded.value }) {
-                Text(text = if (expanded.value) "Show Less" else "Show More")
+                onClick = { expanded = !expanded }) {
+                Text(text = if (expanded) "Show Less" else "Show More")
             }
         }
     }
