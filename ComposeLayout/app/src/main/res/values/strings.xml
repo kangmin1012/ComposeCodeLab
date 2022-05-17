@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ComposeLayout</string>
+    <string name="title_activity_custom_layout">CustomLayoutActivity</string>
 </resources>
