@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ComposeLayoutLab</string>
+    <string name="title_activity_constraint_sample">ConstraintSampleActivity</string>
 </resources>
