@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ComposeLayoutLab">
         <activity
+            android:name=".IntrinsicSizeSampleActivity"
+            android:exported="false"
+            android:label="@string/title_activity_intrinsic_size_sample"
+            android:theme="@style/Theme.ComposeLayoutLab" />
+        <activity
             android:name=".ConstraintSampleActivity"
             android:exported="true"
             android:label="@string/title_activity_constraint_sample"
